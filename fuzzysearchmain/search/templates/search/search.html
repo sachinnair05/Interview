@@ -1,0 +1,41 @@
+<html>
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#search_box").keyup(function(){
+    	val = $(this).val()
+    	if(val.length > 0){
+	        $.ajax({
+	        	url: "http://localhost:8000/search?word=" + val,
+	            success: function(data, status) {
+	                $(".results").html('');
+	                for(var i=0;i<data.length;++i){
+	                	$(".results").append("<div class='result'>" + data[i] + "</div>");
+	                }
+	    		}
+	        });
+	    }else{
+	    	$(".results").html('');
+	    }
+    });
+});
+</script>
+</head>
+<body>
+  {% csrf_token %}
+<div style="width: 90%; text-align: center;">
+	<form action="{% url 'search' %}">
+		<input type="text" name="word" id="search_box" placeholder="Type here">
+		<input type="submit" name="submit" value="Search">
+	</form>
+	<div class="results">
+        {% for result in results %}
+        <div class='result'>{{ result }}</div>
+        {% endfor %}
+	</div>
+</div>
+</body>
+</html>
